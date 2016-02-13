@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 $totals = array();
 
 // Set null
-if ( ! isset( $position ) ) $position = null;
+if ( ! isset( $section ) ) $section = null;
 if ( ! isset( $class ) ) $class = null;
 
 // Initialize arrays
@@ -33,15 +33,14 @@ if ( ! isset( $subs ) ) $subs = array();
 							<th class="data-number">#</th>
 						<?php } ?>
 						<th class="data-name">
-							<?php if ( isset( $position ) ) { ?>
-								<?php echo $position; ?>
+							<?php if ( isset( $section ) ) { ?>
+								<?php echo $section; ?>
 							<?php } else { ?>
 								<?php _e( 'Player', 'sportspress' ); ?>
 							<?php } ?>
 						</th>
 					<?php endif; ?>
 					<?php if ( $mode == 'values' ): foreach ( $labels as $key => $label ): ?>
-						<?php if ( isset( $position ) && 'position' == $key ) continue; ?>
 						<th class="data-<?php echo $key; ?>"><?php echo $label; ?></th>
 					<?php endforeach; else: ?>
 						<th class="sp-performance-icons">&nbsp;</th>
@@ -102,8 +101,6 @@ if ( ! isset( $subs ) ) $subs = array();
 						foreach ( $labels as $key => $label ):
 							if ( 'name' == $key )
 								continue;
-							if ( isset( $position ) && 'position' == $key )
-								continue;
 							
 							$value = '&mdash;';
 							if ( $key == 'position' ):
@@ -118,6 +115,8 @@ if ( ! isset( $subs ) ) $subs = array();
 									$player_position = get_term_by( 'id', $position_id, 'sp_position' );
 									if ( $player_position ) $positions[] = $player_position->name;
 								}
+								
+								$positions = array_unique( $positions );
 
 								if ( sizeof( $positions ) ):
 									$value = implode( ', ', $positions );
@@ -159,7 +158,7 @@ if ( ! isset( $subs ) ) $subs = array();
 			<?php if ( apply_filters( 'sportspress_event_performance_show_footer', $show_total ) ): ?>
 				<<?php echo ( $show_players ? 'tfoot' : 'tbody' ); ?>>
 					<?php
-					do_action( 'sportspress_event_performance_table_footer', $data, $labels, $position, $performance_ids );
+					do_action( 'sportspress_event_performance_table_footer', $data, $labels, $section, $performance_ids );
 					if ( $show_total && ( ! $primary || sizeof( array_intersect_key( $totals, array_flip( (array) $primary ) ) ) ) ) {
 						?>
 						<tr class="sp-total-row <?php echo ( $i % 2 == 0 ? 'odd' : 'even' ); ?>">
@@ -177,8 +176,6 @@ if ( ! isset( $subs ) ) $subs = array();
 
 							foreach ( $labels as $key => $label ):
 								if ( 'name' == $key )
-									continue;
-								if ( isset( $position ) && 'position' == $key )
 									continue;
 								if ( $key == 'position' ):
 									$value = '&nbsp;';
