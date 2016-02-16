@@ -61,6 +61,29 @@ if ( is_array( $teams ) ):
 		$teams = array_reverse( $teams, true );
 	}
 	
+	// Get performance columns
+	$args = array(
+		'post_type' => 'sp_performance',
+		'numberposts' => 100,
+		'posts_per_page' => 100,
+		'orderby' => 'menu_order',
+		'order' => 'ASC',
+	);
+
+	$columns = get_posts( $args );
+	
+	// Get formats
+	$formats = array();
+	
+	// Add to formats
+	foreach ( $columns as $column ) {
+		$format = get_post_meta( $column->ID, 'sp_format', true );
+		if ( '' === $format ) {
+			$format = 'number';
+		}
+		$formats[ $column->post_name ] = $format;
+	}
+
 	// Prepare for offense and defense sections
 	if ( -1 != $sections ) {
 		
@@ -80,16 +103,6 @@ if ( is_array( $teams ) ):
 		}
 
 		// Get labels by section
-		$args = array(
-			'post_type' => 'sp_performance',
-			'numberposts' => 100,
-			'posts_per_page' => 100,
-			'orderby' => 'menu_order',
-			'order' => 'ASC',
-		);
-
-		$columns = get_posts( $args );
-
 		foreach ( $columns as $column ):
 			$section = get_post_meta( $column->ID, 'sp_section', true );
 			if ( '' === $section ) {
@@ -137,6 +150,16 @@ if ( is_array( $teams ) ):
 				
 				foreach ( $section_order as $section_id => $section_label ) {
 					if ( sizeof( $data[ $section_id ] ) ) {
+						if ( 1 == $section_id ) {
+							$order = (array)get_post_meta( $id, 'sp_order', true );
+							if ( is_array( $order ) && sizeof( $order ) ) {
+								$player_order = sp_array_value( $order, $team_id, array() );
+								if ( is_array( $player_order ) ) {
+									$data[1] = sp_array_combine( $player_order, $data[1], true );
+								}
+							}
+						}
+						
 						sp_get_template( 'event-performance-table.php', array(
 							'section' => $section_label,
 							'scrollable' => $scrollable,
@@ -146,6 +169,7 @@ if ( is_array( $teams ) ):
 							'show_total' => $show_total,
 							'caption' => 0 == $section_id && $team_id ? get_the_title( $team_id ) : null,
 							'labels' => $labels[ $section_id ],
+							'formats' => $formats,
 							'mode' => $mode,
 							'data' => $data[ $section_id ],
 							'event' => $event,
@@ -178,6 +202,7 @@ if ( is_array( $teams ) ):
 					'show_total' => $show_total,
 					'caption' => $team_id ? get_the_title( $team_id ) : null,
 					'labels' => $labels,
+					'formats' => $formats,
 					'mode' => $mode,
 					'data' => $data,
 					'event' => $event,

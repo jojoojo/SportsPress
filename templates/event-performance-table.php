@@ -102,6 +102,9 @@ if ( ! isset( $subs ) ) $subs = array();
 							if ( 'name' == $key )
 								continue;
 							
+							$format = sp_array_value( $formats, $key, 'number' );
+							$placeholder = sp_get_format_placeholder( $format );
+							
 							$value = '&mdash;';
 							if ( $key == 'position' ):
 								$positions = array();
@@ -125,13 +128,16 @@ if ( ! isset( $subs ) ) $subs = array();
 								if ( array_key_exists( $key, $row ) && $row[ $key ] != '' ):
 									$value = $row[ $key ];
 								else:
-									$value = 0;
+									$value = $placeholder;
 								endif;
 							endif;
 							if ( ! array_key_exists( $key, $totals ) ):
-								$totals[ $key ] = 0;
+								$totals[ $key ] = $placeholder;
 							endif;
-							$totals[ $key ] += $value;
+							
+							if ( 'text' !== $format ) {
+								$totals[ $key ] += $value;
+							}
 
 							if ( $mode == 'values' ):
 								echo '<td class="data-' . $key . '">' . $value . '</td>';
@@ -209,6 +215,6 @@ if ( ! isset( $subs ) ) $subs = array();
 			<?php endif; ?>
 		</table>
 	</div>
+	
+	<?php do_action( 'sportspress_after_event_performance_table', $data, $lineups, $subs, $class ); ?>
 </div>
-
-<?php do_action( 'sportspress_after_event_performance_table', $data, $lineups, $subs, $class ); ?>

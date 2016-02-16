@@ -84,7 +84,7 @@ class SP_Meta_Box_Event_Teams {
 							'post_type' => 'sp_player',
 						);
 					} else {
-						$tabs['sp_players'] = array(
+						$tabs['sp_player'] = array(
 							'label' => __( 'Players', 'sportspress' ),
 							'post_type' => 'sp_player',
 						);
