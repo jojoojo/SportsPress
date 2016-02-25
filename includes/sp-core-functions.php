@@ -478,7 +478,7 @@ if ( !function_exists( 'sp_get_format_placeholder' ) ) {
 		$placeholders = apply_filters( 'sportspress_format_placeholders', array(
 			'number' => 0,
 			'time' => '0:00',
-			'text' => '',
+			'text' => '&nbsp;',
 		) );
 		return sp_array_value( $placeholders, $key, 0 );
 	}
@@ -832,7 +832,11 @@ if ( !function_exists( 'sp_post_checklist' ) ) {
 			<ul class="categorychecklist form-no-clear">
 				<li class="sp-select-all-container"><label class="selectit"><input type="checkbox" class="sp-select-all"> <strong><?php _e( 'Select All', 'sportspress' ); ?></strong></label></li>
 				<?php
-				$selected = sp_array_between( (array)get_post_meta( $post_id, $meta, false ), 0, $index );
+				$selected = (array)get_post_meta( $post_id, $slug, false );
+				if ( ! sizeof( $selected ) ) {
+					$selected = (array)get_post_meta( $post_id, $meta, false );
+				}
+				$selected = sp_array_between( $selected, 0, $index );
 				if ( empty( $posts ) ):
 					$query = array( 'post_type' => $meta, 'numberposts' => -1, 'post_per_page' => -1, 'orderby' => 'menu_order' );
 					if ( $meta == 'sp_player' ):
@@ -1314,10 +1318,12 @@ function sp_get_text_options() {
 		__( 'Current Team', 'sportspress' ),
 		__( 'Current Teams', 'sportspress' ),
 		__( 'Date', 'sportspress' ),
+		__( 'Defense', 'sportspress' ),
 		__( 'Details', 'sportspress' ),
 		__( 'Event', 'sportspress' ),
 		__( 'Competition', 'sportspress' ),
 		__( 'Nationality', 'sportspress' ),
+		__( 'Offense', 'sportspress' ),
 		__( 'Outcome', 'sportspress' ),
 		__( 'Past Teams', 'sportspress' ),
 		__( 'Played', 'sportspress' ),
