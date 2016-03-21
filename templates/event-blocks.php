@@ -104,7 +104,7 @@ if ( $title )
 						<td>
 							<?php echo implode( $logos, ' ' ); ?>
 							<time class="sp-event-date" datetime="<?php echo $event->post_date; ?>">
-								<?php echo sp_add_link( get_the_time( get_option( 'date_format' ), $event ), $permalink, $link_events ); ?>
+								<?php echo sp_add_link( sp_get_time( $event ), $permalink, $link_events ); ?>
 							</time>
 							<h5 class="sp-event-results">
 								<?php echo sp_add_link( '<span class="sp-result">' . implode( '</span> - <span class="sp-result">', apply_filters( 'sportspress_event_blocks_team_result_or_time', sp_get_main_results_or_time( $event ), $event->ID ) ), $permalink, $link_events . '</span>' ); ?>

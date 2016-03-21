@@ -18,7 +18,12 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 function sp_get_time( $post = 0, $format = null ) {
 	if ( null == $format ) $format = get_option( 'time_format' );
-	return get_post_time( $format, false, $post, true );
+	$timetest = get_post_time( 'H:i', false, $post, false);
+	if($timetest == "00:00") {
+		echo "TBA";
+	} else {
+		return get_post_time( $format, false, $post, true );
+	}
 }
 
 function sp_the_time( $post = 0 ) {
